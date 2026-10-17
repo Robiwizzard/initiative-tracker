@@ -6,7 +6,7 @@ Encounters are saved as JSON files by a small Node server, so MyDailyApps can sy
 
 ## Run it
 
-Needs Node 20 or newer.
+Needs Node 26 or newer (see `.nvmrc`).
 
 ```
 npm ci
