@@ -80,16 +80,11 @@ describe("turns", () => {
     const s = newEncounter();
     expect(reducer(s, { type: "next" })).toBe(s);
   });
-  it("reset combat clears everything back to 6 empty rows, keeping name and id", () => {
-    let s = run(base(), { type: "setName", name: "Ambush" }, { type: "addCondition", rowId: "a", condition: "prone", rounds: 3 }, { type: "next" }, { type: "next" });
-    const id = s.id;
+  it("reset combat keeps durations", () => {
+    let s = run(base(), { type: "addCondition", rowId: "a", condition: "prone", rounds: 3 }, { type: "next" }, { type: "next" });
     s = reducer(s, { type: "resetCombat" });
     expect([s.round, s.activeId]).toEqual([1, null]);
-    expect(s.rows).toHaveLength(6);
-    expect(s.rows.every(isEmptyRow)).toBe(true);
-    expect(s.rows.every((r) => r.conditions.length === 0 && r.hp === null && r.ac === null && r.classIcon === "monster")).toBe(true);
-    expect(s.rows.map((r) => r.id)).not.toContain("a");
-    expect([s.name, s.id]).toEqual(["Ambush", id]);
+    expect(s.rows[0].conditions).toEqual([{ id: "prone", roundsLeft: 2 }]); // ticked once when A became active
   });
 });
 

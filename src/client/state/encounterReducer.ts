@@ -167,7 +167,6 @@ export function reducer(s: Encounter, a: Action): Encounter {
       return { ...s, round: Math.max(1, s.round - 1), activeId: s.rows[lastIdx(s.rows.length - 1)].id };
     }
     case "resetCombat":
-      // Back to a fresh table: round 1, nobody active, six empty rows. Name and id are kept.
-      return { ...s, round: 1, activeId: null, rows: Array.from({ length: EMPTY_ROWS }, newRow) };
+      return { ...s, round: 1, activeId: null };
   }
 }
