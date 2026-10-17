@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { Encounter } from "../shared/types";
 import { slugify } from "../shared/slug";
-import { newEncounter, reducer } from "./state/encounterReducer";
+import { isEmptyRow, newEncounter, reducer } from "./state/encounterReducer";
 import { ConflictError, api, lastSlug } from "./state/useEncounterApi";
 import type { EncounterSummary } from "./state/useEncounterApi";
 import { EncounterTitle } from "./components/EncounterTitle";
@@ -137,6 +137,16 @@ export default function App() {
         dirty={dirty}
         saving={saving}
         onSave={() => void doSave()}
+        onReset={() => {
+          const reset = () => dispatch({ type: "resetCombat" });
+          if (encounter.rows.every(isEmptyRow) && encounter.rows.length === 6) reset();
+          else
+            setPending({
+              message: "Reset combat? Round goes back to 1 and every row is cleared to six empty ones.",
+              confirmLabel: "Reset",
+              run: reset,
+            });
+        }}
         onNew={() => guard("Start a new encounter?", "New encounter", () => load(newEncounter()))}
       >
         <OpenMenu list={list} lastSlug={last} error={listError} onOpenMenu={() => void refreshList()} onPick={open} onDelete={remove} />

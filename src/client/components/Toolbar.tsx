@@ -1,10 +1,11 @@
 import type { ReactNode } from "react";
 import type { Action } from "../state/encounterReducer";
 
-export function Toolbar({ round, dispatch, onNew, onSave, dirty, saving, children }: {
+export function Toolbar({ round, dispatch, onNew, onReset, onSave, dirty, saving, children }: {
   round: number;
   dispatch: (a: Action) => void;
   onNew: () => void;
+  onReset: () => void;
   onSave: () => void;
   dirty: boolean;
   saving: boolean;
@@ -20,7 +21,7 @@ export function Toolbar({ round, dispatch, onNew, onSave, dirty, saving, childre
         <button className="btn primary" onClick={() => dispatch({ type: "next" })} aria-label="Next turn">Next ▶</button>
         <button className="btn" onClick={() => dispatch({ type: "sort" })}>Sort</button>
         <button className="btn" onClick={() => dispatch({ type: "addRow" })}>+ Row</button>
-        <button className="btn" onClick={() => dispatch({ type: "resetCombat" })} title="Round 1, nobody active. Condition durations are kept.">Reset combat</button>
+        <button className="btn" onClick={onReset} title="Round 1 and six empty rows. Keeps the encounter name.">Reset combat</button>
       </div>
       <div className="toolbar-group">
         {children}
