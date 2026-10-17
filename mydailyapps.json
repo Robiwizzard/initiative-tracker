@@ -8,7 +8,7 @@
     { "type": "git", "requires": ["node", "npm"], "setup": "npm ci", "launch": "npm start" }
   ],
   "cloud": {
-    "include": ["encounters/*.json"],
+    "include": ["encounters/*.json", "custom/*.json"],
     "maxSizeMB": 20
   }
 }

@@ -135,3 +135,39 @@ describe("a 3 round mock combat", () => {
     expect(s.rows[2].conditions).toEqual([]);
   });
 });
+
+describe("custom icons and conditions", () => {
+  const PNG = "data:image/png;base64,iVBORw0KGgo=";
+  it("sets and clears a custom row icon; picking a class drops it", () => {
+    let s = reducer(enc([row("a", "A", 1)]), { type: "setCustomIcon", rowId: "a", icon: PNG });
+    expect(s.rows[0].customIcon).toBe(PNG);
+    s = reducer(s, { type: "setCustomIcon", rowId: "a", icon: null });
+    expect(s.rows[0].customIcon).toBeUndefined();
+    s = reducer(s, { type: "setCustomIcon", rowId: "a", icon: PNG });
+    s = reducer(s, { type: "setClass", rowId: "a", classIcon: "wizard" });
+    expect(s.rows[0].customIcon).toBeUndefined();
+    expect(s.rows[0].classIcon).toBe("wizard");
+  });
+  it("adds a custom condition with name, description and icon", () => {
+    const s = reducer(enc([row("a", "A", 1)]), {
+      type: "addCondition", rowId: "a", condition: "custom:x1", rounds: 3,
+      custom: { name: " Hexed ", description: "Disadvantage on checks", icon: PNG },
+    });
+    expect(s.rows[0].conditions).toEqual([{ id: "custom:x1", roundsLeft: 3, name: "Hexed", description: "Disadvantage on checks", icon: PNG }]);
+  });
+  it("edits and clears overrides on a standard condition", () => {
+    let s = reducer(enc([row("a", "A", 1)]), { type: "addCondition", rowId: "a", condition: "prone", rounds: 2 });
+    s = reducer(s, { type: "setCondition", rowId: "a", condition: "prone", rounds: 2, patch: { name: "Knocked down", description: "Crawling" } });
+    expect(s.rows[0].conditions[0]).toMatchObject({ name: "Knocked down", description: "Crawling", roundsLeft: 2 });
+    s = reducer(s, { type: "setCondition", rowId: "a", condition: "prone", rounds: 2, patch: { name: "", description: null } });
+    expect(s.rows[0].conditions[0]).toEqual({ id: "prone", roundsLeft: 2 });
+  });
+  it("keeps overrides when exhaustion stacks and when ticking", () => {
+    let s = reducer(enc([row("a", "A", 5), row("b", "B", 4)]), { type: "addCondition", rowId: "a", condition: "exhaustion", rounds: null, custom: { name: "Weary" } });
+    s = reducer(s, { type: "addCondition", rowId: "a", condition: "exhaustion", rounds: null });
+    expect(s.rows[0].conditions[0]).toEqual({ id: "exhaustion", roundsLeft: null, level: 2, name: "Weary" });
+    s = reducer(s, { type: "addCondition", rowId: "b", condition: "custom:c", rounds: 1, custom: { name: "Cursed" } });
+    s = run(s, { type: "next" }, { type: "next" }); // b's turn: 1 -> 0, removed
+    expect(s.rows[1].conditions).toEqual([]);
+  });
+});

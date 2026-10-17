@@ -21,13 +21,19 @@ export const CombatRow = memo(function CombatRow({ row, active, dispatch }: { ro
       </td>
       <td>
         <div className="name-cell">
-          <ClassPicker value={row.classIcon} rowName={row.name} onPick={(c) => dispatch({ type: "setClass", rowId: row.id, classIcon: c })} />
+          <ClassPicker
+            value={row.classIcon}
+            customIcon={row.customIcon}
+            rowName={row.name}
+            onPick={(c) => dispatch({ type: "setClass", rowId: row.id, classIcon: c })}
+            onPickCustom={(d) => dispatch({ type: "setCustomIcon", rowId: row.id, icon: d })}
+          />
           <input
             className="cell-input"
             value={row.name}
             placeholder="Name"
             maxLength={100}
-            aria-label="Name"
+            aria-label="Combatant name"
             data-field="name"
             onChange={(e) => dispatch({ type: "editName", rowId: row.id, name: e.target.value })}
           />

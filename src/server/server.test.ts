@@ -91,3 +91,51 @@ describe("api", () => {
     expect((await put("goblin-ambush", mk("fresh"))).status).toBe(200);
   });
 });
+
+const PNG = "data:image/png;base64,iVBORw0KGgo=";
+
+describe("custom icons and conditions validation", () => {
+  it("accepts custom condition fields and row icons", () => {
+    const e = mk("a");
+    (e.rows[0] as any).customIcon = PNG;
+    e.rows[0].conditions = [{ id: "custom:abc-123", roundsLeft: null, name: "Hexed", description: "Disadvantage on checks", icon: PNG }];
+    expect(validateEncounter(e)).toBeNull();
+  });
+  it("rejects bad ids and non-image data urls", () => {
+    const e = mk("a");
+    e.rows[0].conditions = [{ id: "custom:../x" as any, roundsLeft: null }];
+    expect(validateEncounter(e)).not.toBeNull();
+    e.rows[0].conditions = [{ id: "prone", roundsLeft: null, icon: "data:text/html;base64,PHNjcmlwdD4=" }];
+    expect(validateEncounter(e)).not.toBeNull();
+    e.rows[0].conditions = [{ id: "prone", roundsLeft: null, icon: "javascript:alert(1)" }];
+    expect(validateEncounter(e)).not.toBeNull();
+  });
+});
+
+describe("custom library api", () => {
+  it("returns an empty library, saves and reloads it, rejects bad bodies", async () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "it-lib-"));
+    const storage = new Storage(dir);
+    await storage.init();
+    const server = createApp(storage).listen(0, "127.0.0.1");
+    await new Promise((r) => server.once("listening", r));
+    const base = `http://127.0.0.1:${(server.address() as any).port}`;
+    try {
+      expect(await (await fetch(`${base}/api/custom`)).json()).toEqual({ schemaVersion: 1, icons: [], conditions: [] });
+      const lib = {
+        schemaVersion: 1,
+        icons: [{ id: "i1", name: "Dragon", dataUrl: PNG }],
+        conditions: [{ id: "custom:c1", name: "Hexed", description: "Bad luck", icon: PNG }],
+      };
+      const put = (body: unknown) =>
+        fetch(`${base}/api/custom`, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+      expect((await put(lib)).status).toBe(200);
+      expect(await (await fetch(`${base}/api/custom`)).json()).toEqual(lib);
+      expect(existsSync(path.join(dir, "custom", "library.json"))).toBe(true);
+      expect((await put({ ...lib, icons: [{ id: "i1", name: "x", dataUrl: "http://evil" }] })).status).toBe(400);
+      expect((await put({ ...lib, conditions: [{ id: "prone", name: "x", description: "" }] })).status).toBe(400);
+    } finally {
+      server.close();
+    }
+  });
+});

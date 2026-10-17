@@ -2,19 +2,30 @@ import { useRef, useState } from "react";
 import { CLASSES } from "../../shared/classes";
 import type { ClassId } from "../../shared/types";
 import { CLASS_ICON_URL } from "../icons";
-import { Icon } from "./Icon";
+import { Glyph } from "./Glyph";
+import { IconPicker } from "./IconPicker";
 import { Popover } from "./Popover";
 import { Tooltip } from "./Tooltip";
 
-export function ClassPicker({ value, rowName, onPick }: { value: ClassId; rowName: string; onPick: (c: ClassId) => void }) {
+export function ClassPicker({ value, customIcon, rowName, onPick, onPickCustom }: {
+  value: ClassId;
+  customIcon?: string;
+  rowName: string;
+  onPick: (c: ClassId) => void;
+  onPickCustom: (dataUrl: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
-  const label = CLASSES.find((c) => c.id === value)!.label;
+  const label = customIcon ? "Custom image" : CLASSES.find((c) => c.id === value)!.label;
+  const done = () => {
+    setOpen(false);
+    btn.current?.focus();
+  };
   return (
     <>
       <Tooltip text={label}>
         <button ref={btn} className="icon-btn" aria-haspopup="dialog" aria-expanded={open} aria-label={`Class icon for ${rowName || "row"}: ${label}`} onClick={() => setOpen((o) => !o)}>
-          <Icon url={CLASS_ICON_URL[value]} />
+          <Glyph image={customIcon} url={CLASS_ICON_URL[value]} />
         </button>
       </Tooltip>
       {open && (
@@ -25,15 +36,16 @@ export function ClassPicker({ value, rowName, onPick }: { value: ClassId; rowNam
                 <button
                   className="icon-btn"
                   aria-label={c.label}
-                  aria-pressed={c.id === value}
-                  style={c.id === value ? { borderColor: "var(--accent)" } : undefined}
-                  onClick={() => { onPick(c.id); setOpen(false); btn.current?.focus(); }}
+                  aria-pressed={!customIcon && c.id === value}
+                  style={!customIcon && c.id === value ? { borderColor: "var(--accent)" } : undefined}
+                  onClick={() => { onPick(c.id); done(); }}
                 >
-                  <Icon url={CLASS_ICON_URL[c.id]} />
+                  <Glyph url={CLASS_ICON_URL[c.id]} />
                 </button>
               </Tooltip>
             ))}
           </div>
+          <IconPicker onPick={(d) => { onPickCustom(d); done(); }} />
         </Popover>
       )}
     </>

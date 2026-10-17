@@ -3,14 +3,36 @@ import path from "node:path";
 import { existsSync } from "node:fs";
 import { SLUG_RE } from "../shared/slug.js";
 import { Storage } from "./storage.js";
-import { validateEncounter, asEncounter } from "./validate.js";
+import { validateEncounter, asEncounter, validateLibrary, asLibrary } from "./validate.js";
 
 export function createApp(storage: Storage, staticDir?: string) {
   const app = express();
-  app.use(express.json({ limit: "1mb" }));
+  app.use(express.json({ limit: "4mb" }));
 
   app.get("/api/ping", (_req, res) => {
     res.json({ ok: true });
+  });
+
+  app.get("/api/custom", async (_req, res, next) => {
+    try {
+      res.json(await storage.readLibrary());
+    } catch (e) {
+      next(e);
+    }
+  });
+
+  app.put("/api/custom", async (req, res, next) => {
+    try {
+      const err = validateLibrary(req.body);
+      if (err) {
+        res.status(400).json({ error: err });
+        return;
+      }
+      await storage.writeLibrary(asLibrary(req.body));
+      res.json({ ok: true });
+    } catch (e) {
+      next(e);
+    }
   });
 
   app.get("/api/encounters", async (_req, res, next) => {

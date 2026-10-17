@@ -1,17 +1,34 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { Encounter } from "../shared/types.js";
+import { EMPTY_LIBRARY } from "../shared/types.js";
+import type { CustomLibrary, Encounter } from "../shared/types.js";
 
 export type SaveResult = "saved" | "conflict";
 
 export class Storage {
   readonly dir: string;
+  private readonly customDir: string;
   constructor(dataDir: string) {
     this.dir = path.join(dataDir, "encounters");
+    this.customDir = path.join(dataDir, "custom");
   }
 
   async init() {
     await fs.mkdir(this.dir, { recursive: true });
+    await fs.mkdir(this.customDir, { recursive: true });
+  }
+
+  async readLibrary(): Promise<CustomLibrary> {
+    try {
+      return JSON.parse(await fs.readFile(path.join(this.customDir, "library.json"), "utf8")) as CustomLibrary;
+    } catch (e: any) {
+      if (e.code === "ENOENT") return { ...EMPTY_LIBRARY, icons: [], conditions: [] };
+      throw e;
+    }
+  }
+
+  async writeLibrary(lib: CustomLibrary) {
+    await this.writeAtomic(path.join(this.customDir, "library.json"), lib);
   }
 
   private file(slug: string) {
@@ -60,9 +77,12 @@ export class Storage {
   }
 
   private async write(slug: string, enc: Encounter) {
-    const target = this.file(slug);
+    await this.writeAtomic(this.file(slug), enc);
+  }
+
+  private async writeAtomic(target: string, data: unknown) {
     const tmp = `${target}.tmp`;
-    await fs.writeFile(tmp, JSON.stringify(enc, null, 2), "utf8");
+    await fs.writeFile(tmp, JSON.stringify(data, null, 2), "utf8");
     await fs.rename(tmp, target);
   }
 }

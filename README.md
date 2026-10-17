@@ -18,7 +18,7 @@ npm start
 | Variable | Default | Meaning |
 |---|---|---|
 | `PORT` | `5180` | Port to listen on (127.0.0.1 only) |
-| `DATA_DIR` | `./data` | Encounters go in `$DATA_DIR/encounters/<name>.json` |
+| `DATA_DIR` | `./data` | Encounters go in `$DATA_DIR/encounters/<name>.json`, your icons and conditions in `$DATA_DIR/custom/library.json` |
 
 Ctrl+C stops it cleanly.
 
@@ -28,6 +28,8 @@ Ctrl+C stops it cleanly.
 - **Sort** orders by initiative, highest first (ties keep their order, empty rows sink). **Next / Prev** move the active row and the round counter. Timed conditions tick down at the start of that combatant's turn and drop off at 0.
 - **+** in the Conditions cell adds one of the 15 standard conditions, optionally for a number of rounds. Click an applied icon to change its rounds or remove it. Exhaustion stacks as a level (1 to 6).
 - Click the icon next to a name to pick a class icon.
+- **Custom icons:** in the class picker or a condition editor, "Upload image…" adds your own picture. It is resized to 96 px, shown in full colour and kept in **My icons**, so you can reuse it anywhere.
+- **Custom conditions:** click an applied condition to change its name, description and icon (the description shows on hover). "+ New condition…" makes your own, and "Save to my conditions" adds it to the + list for every encounter.
 - **Save** (or Ctrl+S) writes `<encounter-name>.json`. **Open** lists saved encounters. A saved name that already belongs to a different encounter asks before overwriting. Deleting only marks the file `"deleted": true`, because cloud sync does not carry deletions.
 
 ## Develop

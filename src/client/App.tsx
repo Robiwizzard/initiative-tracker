@@ -9,6 +9,7 @@ import { Toolbar } from "./components/Toolbar";
 import { CombatTable } from "./components/CombatTable";
 import { OpenMenu } from "./components/OpenMenu";
 import { ConfirmDialog } from "./components/ConfirmDialog";
+import { LibraryProvider } from "./state/customLibrary";
 
 const snap = (e: Encounter) => JSON.stringify({ ...e, updatedAt: "" });
 
@@ -128,7 +129,7 @@ export default function App() {
     });
 
   return (
-    <>
+    <LibraryProvider>
       <EncounterTitle name={encounter.name} onCommit={(name) => dispatch({ type: "setName", name })} />
       <Toolbar
         round={encounter.round}
@@ -159,6 +160,6 @@ export default function App() {
           }}
         />
       )}
-    </>
+    </LibraryProvider>
   );
 }

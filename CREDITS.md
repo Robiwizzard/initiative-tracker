@@ -34,5 +34,6 @@ Icons are from [game-icons.net](https://game-icons.net), licensed [CC BY 3.0](ht
 | condition: restrained | [manacles](https://game-icons.net/1x1/lorc/manacles.html) | Lorc |
 | condition: stunned | [knockout](https://game-icons.net/1x1/skoll/knockout.html) | Skoll |
 | condition: unconscious | [sleepy](https://game-icons.net/1x1/lorc/sleepy.html) | Lorc |
+| condition: custom (placeholder) | [uncertainty](https://game-icons.net/1x1/lorc/uncertainty.html) | Lorc |
 
 Condition names and the list of 15 conditions come from the D&D 5e System Reference Document 5.1, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
