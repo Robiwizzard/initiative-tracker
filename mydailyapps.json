@@ -1,0 +1,14 @@
+{
+  "manifestVersion": 1,
+  "id": "initiative-tracker",
+  "name": "Initiative Tracker",
+  "group": "D&D",
+  "description": "Turn order, conditions, AC and HP for TTRPG encounters.",
+  "install": [
+    { "type": "git", "requires": ["node", "npm"], "setup": "npm ci", "launch": "npm start" }
+  ],
+  "cloud": {
+    "include": ["encounters/*.json"],
+    "maxSizeMB": 20
+  }
+}
