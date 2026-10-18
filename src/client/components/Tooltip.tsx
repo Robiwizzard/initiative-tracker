@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import type { FocusEvent, ReactNode } from "react";
 
 interface Placement {
@@ -13,12 +13,22 @@ interface Placement {
  */
 export function Tooltip({ text, detail, children }: { text: string; detail?: string; children: ReactNode }) {
   const [place, setPlace] = useState<Placement | null>(null);
+  const pop = useRef<HTMLSpanElement>(null);
+  const anchorX = useRef(0);
   const wide = !!detail;
+
+  // The box is as wide as its content (up to a maximum), so keep it on screen once its width is known.
+  useLayoutEffect(() => {
+    const w = pop.current?.getBoundingClientRect().width;
+    if (!w || !place) return;
+    const left = Math.max(w / 2 + 8, Math.min(anchorX.current, window.innerWidth - w / 2 - 8));
+    if (Math.abs(left - place.left) > 0.5) setPlace({ ...place, left });
+  }, [place]);
 
   const show = (el: HTMLElement) => {
     const r = el.getBoundingClientRect();
-    const half = wide ? 150 : 90;
-    const left = Math.max(half + 8, Math.min(r.left + r.width / 2, window.innerWidth - half - 8));
+    anchorX.current = r.left + r.width / 2;
+    const left = anchorX.current;
     const roomBelow = window.innerHeight - r.bottom;
     setPlace(roomBelow < (wide ? 220 : 50) && r.top > roomBelow ? { left, bottom: window.innerHeight - r.top } : { left, top: r.bottom });
   };
@@ -36,8 +46,8 @@ export function Tooltip({ text, detail, children }: { text: string; detail?: str
     >
       {children}
       {place && (
-        <span className="tip-pop" role="tooltip" style={place}>
-          <span className={wide ? "tip-box wide" : "tip-box"}>
+        <span ref={pop} className="tip-pop" role="tooltip" style={place}>
+          <span className="tip-box">
             <span className="tip-name">{text}</span>
             {detail && (
               <>

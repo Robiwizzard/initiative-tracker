@@ -77,12 +77,11 @@ tr.active td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
 
 /* tooltip */
 .tip { position: relative; display: inline-flex; }
-.tip-pop { position: fixed; z-index: 70; padding: 6px 0; transform: translateX(-50%); }
-.tip-box { display: block; background: #000; color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: .8rem; width: max-content; max-width: 300px; }
-.tip-box.wide { width: 300px; max-width: calc(100vw - 16px); }
+.tip-pop { position: fixed; z-index: 70; padding: 6px 0; transform: translateX(-50%); width: max-content; max-width: min(360px, calc(100vw - 16px)); }
+.tip-box { display: block; background: #000; color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: .8rem; }
 .tip-name { display: block; text-align: center; font-weight: 600; }
 .tip-rule { display: block; width: 60%; height: 1px; background: var(--border); margin: 6px auto; }
-.tip-detail { display: block; max-height: 8.5em; overflow-y: auto; overscroll-behavior: contain; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted); padding-right: 4px; }
+.tip-detail { display: block; max-height: 8.5em; overflow-y: auto; overscroll-behavior: contain; text-align: center; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted); padding-right: 4px; }
 
 /* popover + dialog */
 .popover { position: fixed; z-index: 40; background: var(--surface); border: 1px solid var(--accent); border-radius: 8px; padding: 8px; max-width: calc(100vw - 16px); }
