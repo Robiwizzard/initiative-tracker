@@ -52,6 +52,7 @@ export type Action =
   | { type: "setCustomIcon"; rowId: string; icon: string | null }
   | { type: "addRow" }
   | { type: "removeRow"; rowId: string }
+  | { type: "moveRow"; rowId: string; toIndex: number }
   | { type: "addCondition"; rowId: string; condition: AppliedConditionId; rounds: number | null; custom?: ConditionPatch }
   | { type: "setCondition"; rowId: string; condition: AppliedConditionId; rounds: number | null; level?: number; patch?: ConditionPatch }
   | { type: "removeCondition"; rowId: string; condition: AppliedConditionId }
@@ -107,6 +108,16 @@ export function reducer(s: Encounter, a: Action): Encounter {
         activeId = pick >= 0 ? rows[pick].id : null;
       }
       return { ...s, rows, activeId };
+    }
+    case "moveRow": {
+      const from = s.rows.findIndex((r) => r.id === a.rowId);
+      if (from < 0) return s;
+      const to = Math.max(0, Math.min(s.rows.length - 1, a.toIndex));
+      if (to === from) return s;
+      const rows = [...s.rows];
+      const [moved] = rows.splice(from, 1);
+      rows.splice(to, 0, moved);
+      return { ...s, rows };
     }
     case "addCondition": {
       return mapRow(s, a.rowId, (r) => {

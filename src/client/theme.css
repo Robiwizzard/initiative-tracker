@@ -7,7 +7,27 @@
   --muted: #7d8f7d;
   --accent: #3ddc84;
   --danger: #e5534b;
+  --on-accent: #04140a;
+  --tip-bg: #000;
+  --backdrop: rgba(0, 0, 0, .6);
+  --lift-shadow: 0 10px 12px rgba(0, 0, 0, .7);
   color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #f3f6f2;
+  --surface: #ffffff;
+  --surface-hi: #e3f3e8;
+  --border: #c9d6c9;
+  --text: #142014;
+  --muted: #5a6b5a;
+  --accent: #14874a;
+  --danger: #c4312a;
+  --on-accent: #ffffff;
+  --tip-bg: #ffffff;
+  --backdrop: rgba(20, 32, 20, .35);
+  --lift-shadow: 0 8px 12px rgba(20, 40, 20, .25);
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -39,14 +59,16 @@ button { cursor: pointer; }
   border: 1px solid var(--border); border-radius: 6px;
 }
 .btn:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #04140a; font-weight: 700; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
 .btn.danger { color: var(--danger); }
 .btn:disabled { opacity: .5; cursor: default; }
-.dirty-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #04140a; margin-left: 8px; vertical-align: middle; }
+.dirty-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--on-accent); margin-left: 8px; vertical-align: middle; }
 .btn:not(.primary) .dirty-dot { background: var(--accent); }
 
 /* table */
-.table-wrap { overflow-x: auto; }
+/* No scroll box on wide screens: a lifted row near the bottom must not make a scroll bar pop up.
+   (Narrow screens scroll the table sideways, with the bar hidden; see the media query below.) */
+.table-wrap { overflow: visible; }
 table { width: 100%; border-collapse: separate; border-spacing: 0 4px; min-width: 640px; }
 th { text-align: left; color: var(--muted); font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 4px 8px; }
 td { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4px 6px; vertical-align: middle; }
@@ -71,14 +93,14 @@ tr.active td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
 .icon-btn:hover { border-color: var(--border); }
 .icon { display: inline-block; width: 24px; height: 24px; background: currentColor; -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat; }
 .icon.sm { width: 20px; height: 20px; }
-.badge { position: absolute; right: 1px; bottom: 1px; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 8px; background: var(--accent); color: #04140a; font-size: 11px; font-weight: 700; line-height: 16px; text-align: center; }
+.badge { position: absolute; right: 1px; bottom: 1px; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 8px; background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 700; line-height: 16px; text-align: center; }
 .cond-cell { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; }
 .add-cond { color: var(--muted); font-size: 1.2rem; }
 
 /* tooltip */
 .tip { position: relative; display: inline-flex; }
 .tip-pop { position: fixed; z-index: 70; padding: 6px 0; transform: translateX(-50%); width: max-content; max-width: min(360px, calc(100vw - 16px)); }
-.tip-box { display: block; background: #000; color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: .8rem; }
+.tip-box { display: block; background: var(--tip-bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: .8rem; }
 .tip-name { display: block; text-align: center; font-weight: 600; }
 .tip-rule { display: block; width: 60%; height: 1px; background: var(--border); margin: 6px auto; }
 .tip-detail { display: block; max-height: 8.5em; overflow-y: auto; overscroll-behavior: contain; text-align: center; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted); padding-right: 4px; }
@@ -93,7 +115,7 @@ tr.active td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
 .pop-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
 .pop-row label { color: var(--muted); font-size: .85rem; }
 .pop-row .cell-input { width: 120px; border-color: var(--border); }
-.dialog-back { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
+.dialog-back { position: fixed; inset: 0; background: var(--backdrop); display: flex; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
 .dialog { background: var(--surface); border: 1px solid var(--accent); border-radius: 10px; padding: 20px; max-width: 420px; width: 100%; }
 .dialog p { margin: 0 0 16px; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
@@ -135,3 +157,51 @@ footer a { color: var(--muted); }
 .my-icon:hover .my-icon-x, .my-cond:hover .my-icon-x, .my-icon-x:focus-visible { display: block; }
 .editor .btn { white-space: nowrap; padding: 0 10px; }
 .editor .icon-picker { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* theme toggle */
+.theme-toggle { padding: 0; font-size: 1.1rem; line-height: 1; }
+
+/* row reordering */
+.col-drag { width: 36px; }
+td.drag-cell { padding: 4px 0 4px 4px; }
+.drag-handle {
+  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 40px;
+  background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 0;
+  color: var(--muted); cursor: grab; touch-action: none; user-select: none; font-size: 1.1rem; letter-spacing: -2px;
+}
+.drag-handle:hover { color: var(--text); border-color: var(--border); }
+/* positioned so the lifted row can sit above the others (and so all rows measure offsetTop from the same parent) */
+tbody tr { position: relative; }
+tbody td { transition: background-color 200ms ease; }
+tr.dragging td { background: var(--surface-hi); border-color: var(--accent); }
+/* lifted off the table while dragging */
+tr[data-lift] { z-index: 2; filter: drop-shadow(var(--lift-shadow)); }
+tr.dragging .drag-handle { color: var(--accent); }
+body.row-dragging, body.row-dragging * { cursor: grabbing !important; user-select: none; }
+
+/* jiggle: the row being pushed against trembles, harder the closer the swap gets (--tension 0..1, set from JS).
+   The dragged row's own rocking follows the pointer speed and is driven from JS (CombatTable.tsx).
+   Uses the rotate/translate properties so it adds to the inline drag transform. */
+@keyframes row-jiggle {
+  0%, 100% { rotate: 0deg; translate: 0 0; }
+  20% { rotate: calc(var(--amp) * 1deg); translate: calc(var(--amp) * 1px) 0; }
+  45% { rotate: calc(var(--amp) * -.8deg); translate: calc(var(--amp) * -1px) calc(var(--amp) * -.6px); }
+  70% { rotate: calc(var(--amp) * .55deg); translate: calc(var(--amp) * .6px) calc(var(--amp) * .4px); }
+}
+@keyframes row-settle {
+  0% { rotate: -.7deg; }
+  30% { rotate: .45deg; }
+  55% { rotate: -.25deg; }
+  80% { rotate: .1deg; }
+  100% { rotate: 0deg; }
+}
+tr[data-tremble] { --amp: calc(var(--tension, 0) * .7); animation: row-jiggle 150ms linear infinite; }
+tr[data-settle] { animation: row-settle 420ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  tr[data-tremble], tr[data-settle] { animation: none; }
+}
+
+@media (max-width: 720px) {
+  .table-wrap { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; padding-bottom: 28px; margin-bottom: -28px; }
+  .table-wrap::-webkit-scrollbar { display: none; }
+}

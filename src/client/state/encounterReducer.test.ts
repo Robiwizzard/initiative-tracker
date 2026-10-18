@@ -24,6 +24,17 @@ describe("new encounter and title", () => {
 });
 
 describe("rows", () => {
+  it("moves a row to a new position and keeps the active row", () => {
+    const s = enc([row("a", "A", 10), row("b", "B", 8), row("c", "C", 5)], { activeId: "b" });
+    const ids = (e: Encounter) => e.rows.map((r) => r.id).join("");
+    expect(ids(run(s, { type: "moveRow", rowId: "a", toIndex: 2 }))).toBe("bca");
+    expect(ids(run(s, { type: "moveRow", rowId: "c", toIndex: 0 }))).toBe("cab");
+    expect(ids(run(s, { type: "moveRow", rowId: "b", toIndex: 99 }))).toBe("acb");
+    expect(ids(run(s, { type: "moveRow", rowId: "b", toIndex: -1 }))).toBe("bac");
+    expect(run(s, { type: "moveRow", rowId: "a", toIndex: 2 }).activeId).toBe("b");
+    expect(run(s, { type: "moveRow", rowId: "a", toIndex: 0 })).toBe(s);
+    expect(run(s, { type: "moveRow", rowId: "zz", toIndex: 0 })).toBe(s);
+  });
   it("adds and removes", () => {
     const s = run(newEncounter(), { type: "addRow" });
     expect(s.rows).toHaveLength(7);

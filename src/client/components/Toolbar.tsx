@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Action } from "../state/encounterReducer";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Toolbar({ round, dispatch, onNew, onSave, dirty, saving, children }: {
   round: number;
@@ -28,6 +29,7 @@ export function Toolbar({ round, dispatch, onNew, onSave, dirty, saving, childre
         <button className="btn primary" onClick={onSave} disabled={saving} aria-label={dirty ? "Save (unsaved changes)" : "Save"} title="Save (Ctrl+S)">
           Save{dirty && <span className="dirty-dot" aria-hidden="true" />}
         </button>
+        <ThemeToggle />
       </div>
     </div>
   );

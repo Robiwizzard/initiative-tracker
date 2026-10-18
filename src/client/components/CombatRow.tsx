@@ -1,15 +1,35 @@
 import { memo } from "react";
+import type { KeyboardEvent, PointerEvent } from "react";
 import type { Combatant } from "../../shared/types";
 import type { Action } from "../state/encounterReducer";
 import { ClassPicker } from "./ClassPicker";
 import { ConditionCell } from "./ConditionCell";
 import { IntField } from "./IntField";
 
-export const CombatRow = memo(function CombatRow({ row, active, dispatch }: { row: Combatant; active: boolean; dispatch: (a: Action) => void }) {
+export const CombatRow = memo(function CombatRow({ row, active, dragging, dispatch, onHandlePointerDown, onHandleKeyDown }: {
+  row: Combatant;
+  active: boolean;
+  dragging: boolean;
+  dispatch: (a: Action) => void;
+  onHandlePointerDown: (rowId: string, e: PointerEvent) => void;
+  onHandleKeyDown: (rowId: string, e: KeyboardEvent) => void;
+}) {
   const who = row.name || "row";
   const focusName = () => document.querySelector<HTMLInputElement>(`tr[data-row="${row.id}"] [data-field="name"]`)?.focus();
   return (
-    <tr className={active ? "active" : undefined} data-row={row.id} aria-current={active ? "true" : undefined}>
+    <tr className={[active && "active", dragging && "dragging"].filter(Boolean).join(" ") || undefined} data-row={row.id} aria-current={active ? "true" : undefined}>
+      <td className="drag-cell">
+        <button
+          type="button"
+          className="drag-handle"
+          aria-label={`Move ${who} (drag, or Arrow Up / Down)`}
+          title="Drag to reorder (or focus and use Arrow Up / Down)"
+          onPointerDown={(e) => onHandlePointerDown(row.id, e)}
+          onKeyDown={(e) => onHandleKeyDown(row.id, e)}
+        >
+          <span aria-hidden="true">⋮⋮</span>
+        </button>
+      </td>
       <td>
         <IntField
           value={row.initiative}
