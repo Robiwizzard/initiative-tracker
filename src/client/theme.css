@@ -46,7 +46,7 @@ button { cursor: pointer; }
 .btn:not(.primary) .dirty-dot { background: var(--accent); }
 
 /* table */
-.table-wrap { overflow-x: auto; padding-bottom: 80px; margin-bottom: -80px; }
+.table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: separate; border-spacing: 0 4px; min-width: 640px; }
 th { text-align: left; color: var(--muted); font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 4px 8px; }
 td { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 4px 6px; vertical-align: middle; }
@@ -77,12 +77,12 @@ tr.active td:first-child { box-shadow: inset 4px 0 0 var(--accent); }
 
 /* tooltip */
 .tip { position: relative; display: inline-flex; }
-.tip-text {
-  position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%);
-  background: #000; color: var(--text); border: 1px solid var(--border); border-radius: 4px;
-  padding: 2px 8px; font-size: .8rem; white-space: nowrap; pointer-events: none; z-index: 30; display: none;
-}
-.tip:hover > .tip-text, .tip:has(:focus-visible) > .tip-text { display: block; }
+.tip-pop { position: fixed; z-index: 70; padding: 6px 0; transform: translateX(-50%); }
+.tip-box { display: block; background: #000; color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: .8rem; width: max-content; max-width: 300px; }
+.tip-box.wide { width: 300px; max-width: calc(100vw - 16px); }
+.tip-name { display: block; text-align: center; font-weight: 600; }
+.tip-rule { display: block; width: 60%; height: 1px; background: var(--border); margin: 6px auto; }
+.tip-detail { display: block; max-height: 8.5em; overflow-y: auto; overscroll-behavior: contain; text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted); padding-right: 4px; }
 
 /* popover + dialog */
 .popover { position: fixed; z-index: 40; background: var(--surface); border: 1px solid var(--accent); border-radius: 8px; padding: 8px; max-width: calc(100vw - 16px); }
@@ -134,6 +134,5 @@ footer a { color: var(--muted); }
 .my-cond .cond-opt { width: 100%; }
 .my-icon-x { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; padding: 0; line-height: 16px; font-size: 10px; border-radius: 50%; background: var(--bg); color: var(--danger); border: 1px solid var(--border); display: none; z-index: 2; }
 .my-icon:hover .my-icon-x, .my-cond:hover .my-icon-x, .my-icon-x:focus-visible { display: block; }
-.tip-text { text-align: left; }
-.tip-detail { display: block; max-width: 260px; white-space: pre-wrap; color: var(--muted); border-top: 1px solid var(--border); margin-top: 3px; padding-top: 3px; }
 .editor .btn { white-space: nowrap; padding: 0 10px; }
+.editor .icon-picker { margin-top: 0; padding-top: 0; border-top: 0; }

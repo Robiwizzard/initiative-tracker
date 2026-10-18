@@ -30,7 +30,6 @@ export function ConditionEditor({ idKey, conditionId, initial, placeholderName, 
   const [num, setNum] = useState(
     exhaustion ? String(initial.level) : initial.rounds === null ? "" : String(initial.rounds),
   );
-  const [choosing, setChoosing] = useState(false);
 
   const values = (): EditorValues => {
     const n = parseInt(num, 10);
@@ -56,27 +55,21 @@ export function ConditionEditor({ idKey, conditionId, initial, placeholderName, 
       </div>
       <div className="pop-field">
         <span className="pop-label">Icon</span>
-        <div className="pop-row" style={{ marginTop: 0 }}>
-          <span className="icon-btn" style={{ cursor: "default" }}>
-            <Glyph image={icon ?? undefined} url={conditionDefaultIconUrl(conditionId)} />
-          </span>
-          <button className="btn" onClick={() => setChoosing((c) => !c)} aria-expanded={choosing}>
-            {choosing ? "Hide my icons" : "Choose image…"}
-          </button>
-          {icon && (
-            <button className="btn" onClick={() => setIcon(null)}>
-              Default icon
-            </button>
-          )}
-        </div>
-        {choosing && (
-          <IconPicker
-            onPick={(d) => {
-              setIcon(d);
-              setChoosing(false);
-            }}
-          />
-        )}
+        <IconPicker
+          onPick={(d) => setIcon(d)}
+          leading={
+            <span className="icon-btn" style={{ cursor: "default" }} aria-label="Current icon">
+              <Glyph image={icon ?? undefined} url={conditionDefaultIconUrl(conditionId)} />
+            </span>
+          }
+          extra={
+            icon ? (
+              <button className="btn" onClick={() => setIcon(null)}>
+                Default icon
+              </button>
+            ) : undefined
+          }
+        />
       </div>
       <div className="pop-row">
         <label htmlFor={`${idKey}-num`}>{exhaustion ? "Level (1–6)" : "Rounds"}</label>
